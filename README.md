@@ -8,6 +8,34 @@
      → GPT中译英 → Pexels自动下风光空镜 → ffmpeg合成(口播↔空镜交替+烧双语字幕+BGM)
 ```
 
+## 快速上手（克隆后配置）
+
+```bash
+# 1) 系统依赖（macOS / Homebrew）
+brew install ffmpeg yt-dlp whisper-cpp
+pip3 install --break-system-packages Pillow
+
+# 2) 下载 whisper 转写模型（二选一，medium 更准、small 更快）
+mkdir -p models
+curl -L -o models/ggml-medium.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.bin
+# curl -L -o models/ggml-small.bin  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin
+#   注: 默认用 ggml-medium.bin; 想用 small 改 emo_clip.py 顶部 WHISPER_MODEL
+
+# 3) 配置密钥: 复制模板再填自己的 key
+cp config.example.json config.json
+#   编辑 config.json:
+#     pexels_api_key —— 免费申请 https://www.pexels.com/api/  (下风光空镜)
+#     aibh_api_key   —— 任意 OpenAI 兼容中转站的 key (做中译英/空镜关键词)
+#     aibh_base      —— 该中转站的 base, 如 https://sub.xxx/v1 (默认值见模板)
+#   也可改用环境变量: PEXELS_API_KEY / AIBH_API_KEY / AIBH_BASE / CHAT_MODEL
+
+# 4) 跑（B站需本机 Chrome 登录过 B站, 脚本自动取 cookie）
+python3 emo_clip.py run "<视频链接>" --job demo --start 7 --end 38
+#   产物在 data/demo/final.mp4
+```
+
+> `config.json` / `models/` / `data/` 都已 gitignore，不会进仓库——所以**克隆后必须自己做第 2、3 步**才能跑。
+
 ## 依赖与配置
 
 | 能力 | 用什么 | 配置 |
